@@ -1,0 +1,26 @@
+{
+  "os": "linux",
+  "arch": "amd64",
+  "packages": [
+    {
+      "source": "github",
+      "owner": "joerdav",
+      "repo": "xc",
+      "tag": "v0.8.0",
+      "asset": "xc_0.8.0_linux_amd64",
+      "binary": "xc",
+      "url": "https://api.github.com/repos/joerdav/xc/releases/assets/145700987",
+      "binaryHash": "afd19b873b768cc6b7ac838f06488c807000f6af9667133d56abbaaec270f4e5"
+    },
+    {
+      "source": "github",
+      "owner": "Schniz",
+      "repo": "fnm",
+      "tag": "v1.37.1",
+      "asset": "fnm-linux.zip",
+      "binary": "fnm",
+      "url": "https://api.github.com/repos/Schniz/fnm/releases/assets/173569605",
+      "binaryHash": "2a6d31309b7301fb7a4ffc3e78df864a46dad61198bd193057b2fb48337a11e0"
+    }
+  ]
+}

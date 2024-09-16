@@ -1,4 +1,7 @@
-FROM openjdk:17.0.1-jdk-slim
+FROM mcr.microsoft.com/openjdk/jdk:17-ubuntu
+# Is derivated from Ubuntu22.04 not the official openjdk image depending on Debian 11
+
+ARG FINISHTASK=image:android
 
 USER root
 
@@ -88,12 +91,12 @@ RUN cd /tmp/ && curl -sO https://github.com/google/bundletool/releases/download/
 
 # ========== INSTALL NODE TOOLS ==========
 # nvm environment variables
-ENV NVM_DIR /usr/local/nvm
-#ENV NODE_VERSION 8.3.0
+# ENV NVM_DIR /usr/local/nvm
+# ENV NODE_VERSION 8.3.0
 
 # install nvm
 # https://github.com/creationix/nvm#install-script
-RUN mkdir -p /usr/local/nvm && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+# RUN mkdir -p /usr/local/nvm && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 
 # Install node version
 # RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
@@ -106,6 +109,24 @@ RUN mkdir -p /usr/local/nvm && curl -o- https://raw.githubusercontent.com/nvm-sh
 # add node and npm to path so the commands are available
 # ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 # ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# =========== INSTALL STEW BINARY MANAGER ==============
+# Download stew binary manager from apk and remove the apk
+RUN curl -L https://github.com/marwanhawari/stew/releases/download/v0.4.0/stew_0.4.0_linux_amd64.deb -o stew_0.4.0_linux_amd64.deb && \
+    dpkg -i stew_0.4.0_linux_amd64.deb && \
+    rm stew_0.4.0_linux_amd64.deb
+
+COPY stew.config.json Stewfile.lock.json /root/
+
+RUN mkdir -p $HOME/.config/stew && \
+    mkdir -p $HOME/.local/share/stew && \
+    mv $HOME/stew.config.json $HOME/.config/stew/ && \
+    mv $HOME/Stewfile.lock.json $HOME/.local/share/stew/ && \
+    stew install $HOME/.local/share/stew/Stewfile.lock.json && \
+    rm -rf $HOME/.local/share/stew/pkg
+
+COPY README.md /root/
+RUN cd /root/ && xc ${FINISHTASK}
 
 # ==================================
 CMD bitrise -version
